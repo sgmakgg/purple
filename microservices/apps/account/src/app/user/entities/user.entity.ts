@@ -1,5 +1,5 @@
 import {IUser, UserRole} from "@microservices/interfaces";
-import {compare, genSalt, hash} from "bcryptjs";
+import * as bcrypt from 'bcrypt';
 
 export class UserEntity implements IUser{
   _id?: string;
@@ -13,15 +13,16 @@ export class UserEntity implements IUser{
     this.displayName = data.displayName;
     this.email = data.email;
     this.role = data.role;
+    this.passwordHash = data.passwordHash;
   }
 
   public async setPassword(password: string){
-    const salt = await genSalt(10);
-    this.passwordHash = await hash(password, salt);
+    const salt = await bcrypt.genSalt(10);
+    this.passwordHash = await bcrypt.hash(password, salt);
     return this;
   }
 
   public  validatePassword(password: string){
-    return compare(password, this.passwordHash);
+    return bcrypt.compare(password, this.passwordHash);
   }
 }
