@@ -3,6 +3,8 @@ import {ConfigModule, ConfigService} from "@nestjs/config";
 
 export const getMongoConfig = (): MongooseModuleAsyncOptions => {
   return {
+    inject: [ConfigService],
+    imports: [ConfigModule],
     useFactory: (configService: ConfigService) => ({
       uri: configService.get('MONGO_URI'),
       useNewUrlParser: true,
@@ -10,7 +12,5 @@ export const getMongoConfig = (): MongooseModuleAsyncOptions => {
       useCreateIndex: true,
       useFindAndModify: false
     }),
-    inject: [ConfigService],
-    imports: [ConfigModule]
   }
 };
